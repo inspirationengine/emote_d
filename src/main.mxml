@@ -13,7 +13,11 @@
 			}
 			
 			private function refreshVerbatims(search_str:String = '', modifier:* = null):void {
-				this.verbatims_ds.send({search:search_str});
+				if(modifier != null){
+					this.verbatims_ds.send({search:search_str, subset:modifier});
+				}else{
+					this.verbatims_ds.send({search:search_str});
+				}
 			}
 			
 		]]>

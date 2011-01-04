@@ -1,10 +1,7 @@
 package com.emote.dashboard.emotion_distribution
 {	
-	import flash.display.GradientType;
 	import flash.display.Graphics;
-	import flash.display.SpreadMethod;
 	import flash.display.Sprite;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
 	import mx.charts.ChartItem;
@@ -112,6 +109,7 @@ package com.emote.dashboard.emotion_distribution
 			label.setStyle("color", labelColor);
 	       	
 	        var columnColor:uint = csi.item['color'];
+	        var tr:Number = ((csi.element as ColumnSeries).selectedItem == csi) ? 0.6 : 0.9;
 	        
 	        /*var fType:String = GradientType.LINEAR;
 			//Colors of our gradient in the form of an array
@@ -131,7 +129,7 @@ package com.emote.dashboard.emotion_distribution
     		g.beginGradientFill( fType, colors, alphas, ratios, matr, sprMethod );*/
 	        
 			// Draw the column
-			g.beginFill(columnColor, 0.9); // bitmapFill
+			g.beginFill(columnColor, tr); // bitmapFill
 			g.drawRoundRect(rc.left, rc.top, rc.width, rc.height, 8, 8);
 	        /*g.lineTo(rc.right,rc.top);
 	        g.lineTo(rc.right,rc.bottom);

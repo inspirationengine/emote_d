@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ns="com.emote.dashboard.emotion_distribution.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+		
+			[Bindable] private var _emotion_data:XML;
+			[Bindable] public function set emotion_data(d:XML):void { this._emotion_data = d; this.fillEmotionDistributionDP(); this.fillIntensityDistributionDP();  }
+					   public function get emotion_data():XML { return this._emotion_data; }
+					   
+			[Bindable] private var _verbatims_data:XML;
+			[Bindable] public function set verbatims_data(d:XML):void { this._verbatims_data = d; }
+					   public function get verbatims_data():XML { return this._verbatims_data; }
+					   
+			[Bindable] private var _emotion_distribution:ArrayCollection = new ArrayCollection();
+			[Bindable] private var _intensity_distribution:ArrayCollection = new ArrayCollection();
+			
+			[Bindable] private var _verbatimRefreshFunction:Function = null;
+			[Bindable] public function set onVerbatimRefresh(f:Function):void { this._verbatimRefreshFunction = f; }
+					   public function get onVerbatimRefresh():Function { return this._verbatimRefreshFunction; }
+			
+			private function fillEmotionDistributionDP():void {
+				this._emotion_distribution.removeAll();
+				for each(var bar:XML in this._emotion_data.graph.(@type=='emotion distribution').bar){
+					this._emotion_distribution.addItem({label: bar.@name, data: bar.@value, color: ((bar.@color == 'red') ? 0x9e0300 : 0x617e15) });
+				}
+			}
+			private function fillIntensityDistributionDP():void {
+				this._intensity_distribution.removeAll();
+				for each(var slice:XML in this._emotion_data.graph.(@type=='intensity distrubition').slice){
+					this._intensity_distribution.addItem({label: slice.@name, data: slice.@value});
+				}
+			}
+			
+			private function doSearch():void {
+				if(this._verbatimRefreshFunction != null)
+					this._verbatimRefreshFunction(this.search_term.text);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Style>
+        @font-face {
+            src: url("assets/fonts/MyriadWebPro.ttf");
+            font-family: EMyriadWebPro;
+        }
+
+        ColumnChart {
+            font-family: EMyriadWebPro;
+            color: 0xffffff;
+        }
+        
+        .mainBox {
+        	borderStyle:solid;
+			borderThickness:0;
+			cornerRadius:6px;
+			backgroundColor: #ffffff;
+			paddingTop:4px;
+			paddingBottom:4px;
+			paddingRight:4px;
+			paddingLeft:4px;
+        }
+        
+        .internalBlackBox {
+        	borderStyle:solid;
+			borderThickness:0;
+			cornerRadius:5px;
+			backgroundColor: #000000;
+			paddingTop:4px;
+			paddingBottom:4px;
+			paddingRight:4px;
+			paddingLeft:4px;
+        }
+        
+        .internalContentBox {
+        	borderStyle:solid;
+			borderThickness:0;
+			cornerRadius:4px;
+			backgroundColor: #a6a6a6;
+			paddingTop:0px;
+			paddingBottom:0px;
+			paddingRight:0px;
+			paddingLeft:0px;
+        } 
+        
+        .boxLabel {
+        	font-family: EMyriadWebPro;
+            font-color: #000000;
+            font-size: 21px;
+            padding-bottom: -8px;
+            padding-left: 20px;
+        }
+    </mx:Style>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%" height="100%" styleName="mainBox" horizontalGap="4">
+			<mx:VBox width="100%" height="100%" styleName="internalBlackBox">
+				<mx:VBox width="100%" height="100%" styleName="internalContentBox">
+					<mx:Label text="EMOTION DISTRIBUTION" styleName="boxLabel" />
+					<mx:HBox width="100%" height="100%" backgroundColor="0x000000">
+						
+					<mx:ColumnChart id="emotion_chart" width="100%" height="100%" dataProvider="{this._emotion_distribution}" showDataTips="false" columnWidthRatio=".97">
+        			<mx:horizontalAxis>
+           				<mx:CategoryAxis id="ha" categoryField="label" />
+        			</mx:horizontalAxis>
+        			
+        			<mx:verticalAxis>
+           				<mx:LinearAxis id="va" />
+        			</mx:verticalAxis>
+        			
+        			<mx:series>
+           				<mx:ColumnSeries xField="label" yField="data" displayName="dd" selectable="true" itemRenderer="com.emote.dashboard.emotion_distribution.ChartItemRenderer" />
+        			</mx:series>
+        			
+        			<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{va}" showLine="false" showLabels="false" tickLength="0"/>
+            		</mx:verticalAxisRenderers>
+            		
+            		<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{ha}" showLine="false" labelRotation="90" />
+            		</mx:horizontalAxisRenderers>
+        			<mx:backgroundElements><mx:Array></mx:Array></mx:backgroundElements>
+        			
+     				</mx:ColumnChart>
+     				</mx:HBox> 	
+				</mx:VBox>
+			</mx:VBox>
+
+			<mx:VBox width="315" height="100%">
+				<mx:HBox width="100%" height="60">
+					<mx:HBox width="70%" height="100%" styleName="internalBlackBox" verticalAlign="middle" horizontalAlign="center">
+						<mx:Label text="e.mote" />
+						<mx:Label text="Score" />
+						<mx:Image source="@Embed(source='assets/verbatim_faces/amazed_intensity_1.png')" />
+						<mx:Label text="{this._emotion_data.@emote_score}" fontWeight="bold" />
+					</mx:HBox>
+					<mx:HBox width="30%" height="100%" styleName="internalBlackBox" horizontalAlign="center" verticalAlign="middle" horizontalGap="5">
+						<mx:Image id="pdf_button" source="@Embed(source='assets/pdf-icon.png')" alpha=".5" rollOver="{this.pdf_button.alpha=1;}" rollOut="{this.pdf_button.alpha=.5;}" />
+						<mx:Image id="doc_button" source="@Embed(source='assets/doc-icon.png')" alpha=".5" rollOver="{this.doc_button.alpha=1;}" rollOut="{this.doc_button.alpha=.5;}" />
+					</mx:HBox>
+				</mx:HBox>
+				<mx:HBox styleName="internalBlackBox" width="100%" height="100%">
+					<mx:VBox width="100%" height="100%" styleName="internalContentBox">
+						<mx:Label text="INTENSITY DISTRIBUTION" styleName="boxLabel" />
+						<mx:HBox width="100%" height="100%" backgroundColor="0x000000">
+							<mx:PieChart dataProvider="{this._intensity_distribution}" width="100%" height="100%">
+							<mx:series>
+           						<mx:PieSeries field="data" nameField="label" labelPosition="callout" explodeRadius=".01" />
+        					</mx:series>
+							</mx:PieChart>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:HBox>
+			</mx:VBox>
+		</mx:HBox>
+		
+		
+		<mx:VBox width="100%" height="100%" styleName="mainBox">
+			<mx:VBox width="100%" height="100%" paddingBottom="0" styleName="internalContentBox">
+				<mx:HBox width="100%">
+					<mx:HBox width="80%" verticalAlign="middle" height="100%" >
+						<mx:Label text="VERBATIMS:{this._verbatims_data.@description}"  styleName="boxLabel" />
+					</mx:HBox>
+					<mx:HBox horizontalAlign="right" verticalAlign="middle" paddingBottom="0" height="27" horizontalGap="-22" paddingRight="20" paddingTop="4">
+						<mx:TextInput id="search_term" width="320" focusAlpha="0" borderStyle="solid" borderThickness="3" cornerRadius="13" paddingLeft="20" paddingRight="20" />
+						<mx:Image source="@Embed(source='assets/crazy-button.png')" buttonMode="true" />
+					</mx:HBox>
+				</mx:HBox>
+				<mx:List dataProvider="{this._verbatims_data.verbatim}" width="100%" height="100%" alternatingItemColors="[0xEEEEEE, 0xDFDFDF]" />
+			</mx:VBox>
+		</mx:VBox>
+		
+	</mx:VBox>	
+</mx:HBox>

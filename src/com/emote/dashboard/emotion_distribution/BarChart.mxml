@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] private var _entries:ArrayCollection;
+			[Bindable] public function get entries():ArrayCollection { return this._entries; }
+					   public function set entries(e:ArrayCollection):void {
+					   		if(this._entries.hasEventListener(CollectionEvent.COLLECTION_CHANGE)) this._entries.removeEventListener(CollectionEvent.COLLECTION_CHANGE, this.drawBars);
+							this._entries = e;
+							this._entries.addEventListener(CollectionEvent.COLLECTION_CHANGE, this.drawBars);
+							// this.drawBars();
+						}
+					   
+					   private function drawBars(e:*=null):void {
+					   		this.dsp.removeAllChildren();
+					   		var barWidth:Number = this.dsp.width/this._entries.length - 1;
+					   		var maxBarValue:Number = 0;
+					   		for(var i:Number = 0; i<this._entries.length; i++){
+					   			if(maxBarValue < Number(this._entries.getItemAt(i).data)) maxBarValue = Number(this._entries.getItemAt(i).data);   
+					   		}
+					   		var stepHeight:Number = (this.dsp.height/2 - 10)/maxBarValue;
+					   		for(i = 0; i<this._entries.length; i++){
+					   			var bar:DisplayObject = this.createBar(barWidth, stepHeight, this._entries.getItemAt(i));
+					   			this.dsp.addChild(bar);
+					   			bar.x = i*(barWidth+1);
+					   			bar.y = bar.height;
+					   		}
+					   }
+					   
+					   private function createBar(width:Number, stepHeight:Number, data:Object):DisplayObject {
+					   		var bar:Canvas = new Canvas;
+					   		bar.width = width;
+					   		bar.height = this.dsp.height;
+					   		bar.graphics.beginFill(0xff0000);
+					   		bar.graphics.drawRoundRect(0,0,width,data.data*stepHeight, 5,5);
+					   		return bar;
+					   }
+		]]>
+	</mx:Script>
+	<mx:Canvas id="dsp" width="100%" height="100%" />
+</mx:HBox>

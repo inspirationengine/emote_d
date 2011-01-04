@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard emote_score="51">
+	<graph type="emotion distribution">
+		<bar name="enthusiastic" value="35" color="green" />
+		<bar name="elated" value="34" color="green" />
+		<bar name="outraged" value="33" color="red" />
+		<bar name="angry" value="31" color="red" />
+		<bar name="unhappy" value="28" color="red" />
+		<bar name="frustrated" value="26" color="red" />
+		<bar name="excited" value="22" color="green" />
+		<bar name="irritated" value="18" color="red" />
+		<bar name="thrilled" value="16" color="green" />
+		<bar name="humiliated" value="14" color="red" />
+		<bar name="amazed" value="13" color="green" />
+		<bar name="disgusted" value="12" color="red" />
+		<bar name="miserable" value="11" color="red" />
+		<bar name="dissatisfied" value="10" color="red" />
+		<bar name="happy" value="9" color="green" />
+		<bar name="uneasy" value="8" color="red" />
+		<bar name="satisfied" value="8" color="green" />
+		<bar name="surprised" value="7" color="green" />
+		<bar name="content" value="3" color="green" />
+		<bar name="delighted" value="0" color="green" />
+	</graph>
+	<graph type="intensity distrubition">
+		<slice name="pp" value="25" />
+		<slice name="mp" value="25" />
+		<slice name="pn" value="20" />
+		<slice name="mn" value="30" />
+	</graph>
+</dashboard>

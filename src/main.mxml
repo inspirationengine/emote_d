@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"
+	xmlns:reflector="com.rictus.reflector.*"
+	xmlns:dashboard="com.emote.dashboard.*"
+	paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"
+	backgroundColor="0x000000"
+	initialize="init();">
+	<mx:Script>
+		<![CDATA[
+			private function init():void {
+				this.graphs_ds.send();
+				this.verbatims_ds.send();
+			}
+			
+			private function refreshVerbatims(search_str:String = '', modifier:* = null):void {
+				this.verbatims_ds.send({search:search_str});
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HTTPService id="graphs_ds" url="data/graphs.xml" useProxy="false" resultFormat="e4x" />
+	<mx:HTTPService id="verbatims_ds" url="data/verbatims.xml" useProxy="false" resultFormat="e4x"  />
+	<dashboard:Dashboard width="100%" height="100%" emotion_data="{this.graphs_ds.lastResult}" verbatims_data="{this.verbatims_ds.lastResult}" onVerbatimRefresh="{this.refreshVerbatims}" />
+</mx:Application>

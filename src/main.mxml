@@ -18,7 +18,9 @@
 			
 		]]>
 	</mx:Script>
-	<mx:HTTPService id="graphs_ds" url="data/graphs.xml" useProxy="false" resultFormat="e4x" />
-	<mx:HTTPService id="verbatims_ds" url="data/verbatims.xml" useProxy="false" resultFormat="e4x"  />
+	<mx:HTTPService id="graphs_ds" url="http://staging1.emotethis.com/results/scorecard.php?survey=holiday" useProxy="false" resultFormat="e4x" />
+	<!-- http://staging1.emotethis.com/results/scorecard.php?survey=holiday -->
+	<mx:HTTPService id="verbatims_ds" url="http://staging1.emotethis.com/results/verbatims.php?survey=holiday" useProxy="false" resultFormat="e4x"  />
+	<!-- http://staging1.emotethis.com/results/verbatims.php?survey=holiday -->
 	<dashboard:Dashboard width="100%" height="100%" emotion_data="{this.graphs_ds.lastResult}" verbatims_data="{this.verbatims_ds.lastResult}" onVerbatimRefresh="{this.refreshVerbatims}" />
 </mx:Application>

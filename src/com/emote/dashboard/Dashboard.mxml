@@ -2,6 +2,7 @@
 <mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ns="com.emote.dashboard.emotion_distribution.*">
 	<mx:Script>
 		<![CDATA[
+			import com.emote.dashboard.emotion_distribution.AdvancedAxisRenderer;
 			import mx.events.CollectionEvent;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -118,8 +119,9 @@
             		</mx:verticalAxisRenderers>
             		
             		<mx:horizontalAxisRenderers>
-						<mx:AxisRenderer axis="{ha}" showLine="false" labelRotation="90" />
+						<mx:AxisRenderer axis="{ha}" showLine="false" labelRotation="90" labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}"  />
             		</mx:horizontalAxisRenderers>
+            		
         			<mx:backgroundElements><mx:Array></mx:Array></mx:backgroundElements>
         			
      				</mx:ColumnChart>

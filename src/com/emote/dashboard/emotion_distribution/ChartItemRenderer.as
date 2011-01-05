@@ -1,7 +1,10 @@
 package com.emote.dashboard.emotion_distribution
 {	
+	import flash.display.GradientType;
 	import flash.display.Graphics;
+	import flash.display.SpreadMethod;
 	import flash.display.Sprite;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
 	import mx.charts.ChartItem;
@@ -17,8 +20,8 @@ package com.emote.dashboard.emotion_distribution
 		private var label:Label;
 		private var back:Sprite;
 		private var _chartItem:ChartItem; // stores current ColumnSeriesItem
-		[Embed(source='assets/gayish_heading.png')]
-		private var head:Class;
+		[Embed(source='assets/fonts/MyriadPro-Bold.otf', fontName="MyriadProE", fontWeight="bold", mimeType="application/x-font-truetype")]
+		private var font1:Class;
 
 	    public function ChartItemRenderer():void
 	    {
@@ -42,8 +45,10 @@ package com.emote.dashboard.emotion_distribution
 				// create and add the label
 		        label = new Label();
 		        label.truncateToFit = true;	
-		        label.setStyle("fontSize", 12);	      
+		        label.setStyle("fontSize", 13);	      
 		        label.setStyle("textAlign", "center");
+		        label.setStyle("fontFamily", "MyriadProE");
+		        label.setStyle("fontWeight", "bold");
 		        addChild(label);
 	        }
 	        	        
@@ -98,39 +103,36 @@ package com.emote.dashboard.emotion_distribution
 	       	{
 				// nudge label up the amount of pixels missing
 	       		label.y = -1 * (labelHeight - barHeight);
-	       		labelColor = 0x222222; // label will appear on white background, so make it dark	       		
+	       		//labelColor = 0x222222; // label will appear on white background, so make it dark	       		
 	       	}
 	       	else
 			{	
 				// center the label vertically in the bar
-	       		label.y = barHeight / 2 - labelHeight / 2;
+	       		label.y =  16;
 			}
 			
 			label.setStyle("color", labelColor);
 	       	
 	        var columnColor:uint = csi.item['color'];
-	        var tr:Number = ((csi.element as ColumnSeries).selectedItem == csi) ? 0.6 : 0.9;
+	        var tr:Number = ((csi.element as ColumnSeries).selectedItem == csi) ? 0.7 : .88;
 	        
-	        /*var fType:String = GradientType.LINEAR;
-			//Colors of our gradient in the form of an array
-			var colors:Array = [ 0xF1F1F1, 0x000000 ];
-			//Store the Alpha Values in the form of an array
-			var alphas:Array = [ 1, 1 ];
-			//Array of color distribution ratios.  
-			//The value defines percentage of the width where the color is sampled at 100%
-			var ratios:Array = [ 0, 4 ];
-			//Create a Matrix instance and assign the Gradient Box
+	        var fType:String = GradientType.LINEAR;
+			var colors:Array = [ 0xffffff, 0xffffff, columnColor, columnColor ];
+			var alphas:Array = [ 1, tr, tr, tr ];
+			var ratios:Array = [ 0, 4, 16, 255 ];
 			var matr:Matrix = new Matrix();
-    		matr.createGradientBox( width, height, Math.PI, 0, 0 );
+    		matr.createGradientBox( width, csi.min, Math.PI/2, 0, 0 );
 			//SpreadMethod will define how the gradient is spread. Note!!! Flash uses CONSTANTS to represent String literals
-			var sprMethod:String = SpreadMethod.PAD;
-			//Start the Gradietn and pass our variables to it
-			
-    		g.beginGradientFill( fType, colors, alphas, ratios, matr, sprMethod );*/
+			var sprMethod:String = SpreadMethod.REFLECT;
+    		g.beginGradientFill( fType, colors, alphas, ratios, matr, sprMethod );
 	        
 			// Draw the column
-			g.beginFill(columnColor, tr); // bitmapFill
-			g.drawRoundRect(rc.left, rc.top, rc.width, rc.height, 8, 8);
+			//g.beginFill(columnColor, tr); // bitmapFill
+			g.drawRoundRect(rc.left, rc.top, rc.width, rc.height+8, 18, 18);
+			
+			this.back.graphics.clear();
+			this.back.graphics.beginFill(columnColor, .2);
+			this.back.graphics.drawRoundRect(0, 20, rc.width, -csi.min-20, 0, 0);
 	        /*g.lineTo(rc.right,rc.top);
 	        g.lineTo(rc.right,rc.bottom);
 	        g.lineTo(rc.left,rc.bottom);

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" backgroundColor="0xff5566">
+	<mx:Script>
+		<![CDATA[
+			[Bindable] private var _data:Object;
+			[Bindable] public function set item(i:Object):void {
+							this._data = i;
+							this.removeAllChildren();
+							this.graphics.beginFill(this._data.color);
+							this.graphics.drawRect(0,0, this.width, this.height);
+							this.graphics.endFill();
+					   }
+					   public function get item():Object { return this._data; }
+					   
+					   override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+					   		// this.width = this.owner['owner']['owner']['owner']['owner']['emotion_chart'].maxLabelWidth;
+							super.updateDisplayList(unscaledWidth, unscaledHeight);
+						}
+		]]>
+	</mx:Script>
+</mx:Canvas>

@@ -99,7 +99,7 @@ package com.emote.dashboard.emotion_distribution
 			var labelColor:uint = 0xFFFFFF; // white
 			//back.y = -minYpos;
 			//this.addChild(hh);
-	       	if (barHeight < labelHeight) // if no room for label
+	       	if (barHeight < labelHeight+14) // if no room for label
 	       	{
 				// nudge label up the amount of pixels missing
 	       		label.y = -1 * (labelHeight - barHeight);
@@ -108,7 +108,7 @@ package com.emote.dashboard.emotion_distribution
 	       	else
 			{	
 				// center the label vertically in the bar
-	       		label.y =  16;
+	       		label.y =  14;
 			}
 			
 			label.setStyle("color", labelColor);
@@ -119,7 +119,9 @@ package com.emote.dashboard.emotion_distribution
 	        var fType:String = GradientType.LINEAR;
 			var colors:Array = [ 0xffffff, 0xffffff, columnColor, columnColor ];
 			var alphas:Array = [ 1, tr, tr, tr ];
-			var ratios:Array = [ 0, 4, 16, 255 ];
+			var r1:Number = 4/csi.min*255;
+			var r2:Number = 16/csi.min*255;
+			var ratios:Array = [ 0, r1, r2, 255 ];
 			var matr:Matrix = new Matrix();
     		matr.createGradientBox( width, csi.min, Math.PI/2, 0, 0 );
 			//SpreadMethod will define how the gradient is spread. Note!!! Flash uses CONSTANTS to represent String literals

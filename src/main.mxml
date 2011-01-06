@@ -3,7 +3,7 @@
 	xmlns:reflector="com.rictus.reflector.*"
 	xmlns:dashboard="com.emote.dashboard.*"
 	paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"
-	backgroundColor="0x000000"
+	backgroundColor="0x000000" width="1140" height="740"
 	initialize="init();">
 	<mx:Script>
 		<![CDATA[

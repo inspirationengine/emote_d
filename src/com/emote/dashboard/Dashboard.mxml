@@ -2,6 +2,10 @@
 <mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ns="com.emote.dashboard.emotion_distribution.*">
 	<mx:Script>
 		<![CDATA[
+			import mx.graphics.SolidColor;
+			import mx.graphics.IFill;
+			import mx.charts.ChartItem;
+			import mx.utils.StringUtil;
 			import mx.utils.ObjectUtil;
 			import mx.charts.renderers.DiamondItemRenderer;
 			import mx.messaging.channels.StreamingAMFChannel;
@@ -33,7 +37,7 @@
 			private function fillEmotionDistributionDP():void {
 				this._emotion_distribution.removeAll();
 				for each(var bar:XML in this._emotion_data.graph.(@type=='emotion distribution').bar){
-					this._emotion_distribution.addItem({label: bar.@name, data: bar.@value, color: ((bar.@color == 'red') ? 0x9e0300 : 0x617e15) });
+					this._emotion_distribution.addItem({label: String(bar.@name).toUpperCase(), data: bar.@value, color: ((bar.@color == 'red') ? 0x8e0701 : 0x476402) });
 				}
 				
 				this.emo_dist_rep.dataProvider = null;
@@ -48,7 +52,7 @@
 					if(slice.@name == 'mp'){ full_label = 'mild positive'; color = 0x649812; }
 					if(slice.@name == 'pn'){ full_label = 'passionate negative'; color = 0xd82620; }
 					if(slice.@name == 'mn'){ full_label = 'mild negative'; color = 0x9d0500; }
-					this._intensity_distribution.addItem({label: slice.@name, data: slice.@value, full:full_label, color: color});
+					this._intensity_distribution.addItem({label: slice.@name, data: slice.@value, full:full_label.toUpperCase(), color: color});
 				}
 			}
 			
@@ -62,15 +66,15 @@
 					this._current_emotion_selected = (this.intensity_chart.selectedChartItem != null) ? this.intensity_chart.selectedChartItem.item.label : null;
 					this.emotion_chart.clearSelection();
 				}else{
-					this._current_emotion_selected = (this.emotion_chart.selectedChartItem != null) ? this.emotion_chart.selectedChartItem.item.label : null;
+					this._current_emotion_selected = (this.emotion_chart.selectedChartItem != null) ? String(this.emotion_chart.selectedChartItem.item.label).toLowerCase() : null;
 					this.intensity_chart.clearSelection();
 				} 
 				this.doSearch();
 			}
 			
-			private function horAxLab(o:Object,e:*,g:*,f:*):String {
-				return f.label+'||'+f.color;
-			}
+			private function pieFillFunct(element:ChartItem, index:Number):IFill {
+	        	return new SolidColor(element.item.color);
+    		}
 			
 		]]>
 	</mx:Script>
@@ -156,9 +160,10 @@
 						
 						<mx:ColumnChart id="emotion_chart" width="100%" height="100%" dataProvider="{this._emotion_distribution}" showDataTips="false"
 							columnWidthRatio=".99" axisTitleStyleName="whiteTitle"  selectionMode="single" click="emotionSelected(event)"
+							fontFamily="EMyriadProBold" color="0xffffff" fontWeight="bold" fontAntiAliasType="advanced" fontSize="13"
 							resize="{this.emo_dist_rep.dataProvider = null; this.emo_dist_rep.dataProvider = this._emotion_distribution; }">
         					<mx:horizontalAxis>
-           						<mx:CategoryAxis id="ha" categoryField="label" labelFunction="horAxLab" />
+           						<mx:CategoryAxis id="ha" categoryField="label" />
         					</mx:horizontalAxis>
         			
         					<mx:verticalAxis>
@@ -175,7 +180,7 @@
             				</mx:verticalAxisRenderers>
             		
             				<mx:horizontalAxisRenderers>
-								<mx:AxisRenderer axis="{ha}" showLine="false" showLabels="true" />
+								<mx:AxisRenderer axis="{ha}" showLine="false" showLabels="true" verticalAxisTitleAlignment="vertical" labelRotation="90" />
 								<!--  labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}" -->
             				</mx:horizontalAxisRenderers>
             		
@@ -212,10 +217,33 @@
 						<mx:VBox width="100%" height="100%" backgroundColor="0x000000">
 							<mx:PieChart id="intensity_chart" dataProvider="{this._intensity_distribution}" width="100%" height="100%" selectionMode="single">
 							<mx:series>
-           						<mx:PieSeries field="data" nameField="full" labelPosition="none" explodeRadius=".001" selectable="true" click="this.emotionSelected(event)" />
+           						<mx:PieSeries field="data" fillFunction="pieFillFunct" nameField="full" labelPosition="none" explodeRadius=".001" selectable="true" click="this.emotionSelected(event)" />
         					</mx:series>
 							</mx:PieChart>
-							<mx:Legend dataProvider="{this.intensity_chart}" direction="horizontal" width="100%" horizontalGap="5" styleName="whiteTitle" horizontalAlign="center" paddingLeft="40" />
+							<mx:Legend direction="horizontal" width="100%" horizontalGap="5" fontFamily="EMyriadProBold" color="0xffffff" fontWeight="bold" fontAntiAliasType="advanced" fontSize="13" styleName="whiteTitle" horizontalAlign="center" paddingLeft="40">
+					
+									<mx:LegendItem label="{String('passionate positive').toUpperCase()}" fontWeight="bold">
+           								<mx:fill>
+            								<mx:SolidColor color="0x83c41c"/>
+           								</mx:fill>
+        							</mx:LegendItem>
+        							<mx:LegendItem label="{String('mild positive').toUpperCase()}" fontWeight="bold">
+           								<mx:fill>
+            								<mx:SolidColor color="0x649812"/>
+           								</mx:fill>
+        							</mx:LegendItem>
+        							<mx:LegendItem label="{String('passionate negative').toUpperCase()}" fontWeight="bold">
+           								<mx:fill>
+            								<mx:SolidColor color="0xd82620"/>
+           								</mx:fill>
+        							</mx:LegendItem>
+        							<mx:LegendItem label="{String('mild negative').toUpperCase()}" fontWeight="bold">
+           								<mx:fill>
+            								<mx:SolidColor color="0x9d0500"/>
+           								</mx:fill>
+        							</mx:LegendItem>
+        							
+							</mx:Legend>
 						</mx:VBox>
 					</mx:VBox>
 				</mx:HBox>

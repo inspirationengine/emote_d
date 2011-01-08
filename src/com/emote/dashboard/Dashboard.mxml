@@ -84,7 +84,7 @@
 			private function pieFillFunct(element:ChartItem, index:Number):IFill {
 	        	return new SolidColor(element.item.color);
     		}
-			
+    		
 		]]>
 	</mx:Script>
 	<mx:Style>
@@ -152,7 +152,6 @@
         .whiteTitle {
         	/*font-family: EMyriadProBold;*/
             color: #ffffff;
-            
         }
         
         .scoreLabel {
@@ -190,7 +189,7 @@
             				</mx:verticalAxisRenderers>
             		
             				<mx:horizontalAxisRenderers>
-								<mx:AxisRenderer axis="{ha}" showLine="false" showLabels="true" verticalAxisTitleAlignment="vertical" labelRotation="90" >
+								<mx:AxisRenderer axis="{ha}" showLine="false" showLabels="true" labelRotation="90" labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}">
 								</mx:AxisRenderer>
 								<!-- labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}"  -->
             				</mx:horizontalAxisRenderers>

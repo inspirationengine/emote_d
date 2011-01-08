@@ -1,83 +1,95 @@
 package com.emote.dashboard.emotion_distribution
 {
-import flash.display.Graphics;
+import flash.display.GradientType;
+import flash.display.InterpolationMethod;
+import flash.display.Shape;
+import flash.display.SpreadMethod;
+import flash.geom.Matrix;
 import flash.geom.Rectangle;
 
 import mx.charts.AxisLabel;
-import mx.charts.ChartItem;
-import mx.containers.Panel;
+import mx.containers.Box;
 import mx.controls.Label;
 import mx.core.IDataRenderer;
-import mx.core.UIComponent;
 
-public class AdvancedAxisRenderer extends UIComponent implements IDataRenderer
+public class AdvancedAxisRenderer extends Box implements IDataRenderer
 {
-	private var _label:Label;
-	
-	[Embed(systemFont='Arial', fontName='myPlainFont',  mimeType='application/x-font' )]
-	private var font1:Class;
 	
 	public function AdvancedAxisRenderer():void
 	{
 		super();
-		_label = new Label();
-		addChild(_label);
-		_label.setStyle("color",0x000000);
-		_label.setStyle("fontFamily" ,"myPlainFont") ;		
+		this.minHeight = 50;
+		this.minWidth = 100;
 	}
-	private var _chartItem:ChartItem;
+
 	private var _axisLabel: AxisLabel;
-
-	public function get data():Object
-	{
-		return _axisLabel; //_chartItem;
+	private var _label: Label;
+	
+	override protected function createChildren():void {
+		super.createChildren();
+		if(_label == null){
+			_label = new Label();
+			_label.selectable = false;
+			addChild(_label);
+		}
+		
 	}
 
-	public function set data(value:Object):void
+	private function redrawBackground(bk_width:Number, bk_height:Number): void {
+		
+		var columnColor: Number = 0x00FF00;
+
+		var type:String = GradientType.LINEAR;
+		var colors:Array = [0x000000, columnColor];
+		var alphas:Array = [1, 0];
+		var ratios:Array = [0, 255];
+		var spreadMethod:String = SpreadMethod.PAD;
+		var interp:String = InterpolationMethod.LINEAR_RGB;
+		var focalPtRatio:Number = 0;
+		
+		var matrix:Matrix = new Matrix();
+		var boxWidth:Number = bk_width;
+		var boxHeight:Number = bk_height;
+		var boxRotation:Number = 0;
+		var tx:Number = 0;
+		var ty:Number = 50;
+		matrix.createGradientBox(boxWidth, boxHeight, boxRotation, tx, ty);
+
+		graphics.beginGradientFill(type, 
+		                            colors,
+		                            alphas,
+		                            ratios, 
+		                            matrix, 
+		                            spreadMethod, 
+		                            interp, 
+		                            focalPtRatio);
+		graphics.drawRect(0, 0, boxWidth, boxHeight);
+		graphics.endFill();
+
+	}
+	
+	public override function get data():Object
+	{	
+		return _axisLabel;
+	}
+
+	public override function set data(value:Object):void
 	{
-		//if (_chartItem == value)
-		if (_axisLabel == value)
-			return;
-		//_chartItem = ChartItem(value);
+		if (_axisLabel == value) return;
+
 		_axisLabel = AxisLabel(value);
 
-		//if(_chartItem != null)
-   		//_label.text = ColumnSeriesItem(_chartItem).item.label[0].toString() + "%";
 		if(_axisLabel != null){
-   			_label.rotation = 90;
-   			_label.text = _axisLabel.text + "%";
-   			
-   			_axisLabel.value = '';
+			_label.text = _axisLabel.text;
   		}
+  		
 	}
 
-	private static const fills:Array = [0xFF0000,0x00FF00,0x0000FF,
-										0x00FFFF,0xFF00FF,0xFFFF00,
-										0xAAFFAA,0xFFAAAA,0xAAAAFF];	 
 	override protected function updateDisplayList(unscaledWidth:Number,
 												  unscaledHeight:Number):void
 	{
 		super.updateDisplayList(unscaledWidth, unscaledHeight);
-				
-		var fill:Number = 0xA5BC4E;
-		
-		
-		var rc:Rectangle = new Rectangle(0, 0, width , height );
-		
-		var g:Graphics = graphics;
-		g.clear();		
-		g.moveTo(rc.left,rc.top);
-		g.beginFill(fill);
-		g.lineTo(rc.right,rc.top);
-		g.lineTo(rc.right,rc.bottom);
-		g.lineTo(rc.left,rc.bottom);
-		g.lineTo(rc.left,rc.top);
-		g.endFill();
-		
-		_label.setActualSize(_label.getExplicitOrMeasuredWidth(),_label.getExplicitOrMeasuredHeight());
-		_label.move(unscaledWidth/2 - _label.getExplicitOrMeasuredWidth()/2,
-				rc.top - _label.getExplicitOrMeasuredHeight() - 5);
+		if(this.data!=null) redrawBackground(unscaledWidth,unscaledHeight);
 	}
-
 }
 }

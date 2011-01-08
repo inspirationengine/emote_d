@@ -19,6 +19,7 @@ package com.emote.dashboard.emotion_distribution
 	{
 		private var label:Label;
 		private var back:Sprite;
+		private var front:Sprite;
 		private var _chartItem:ChartItem; // stores current ColumnSeriesItem
 		[Embed(source='assets/fonts/MyriadPro-Bold.otf', fontName="MyriadProE", fontWeight="bold", mimeType="application/x-font-truetype")]
 		private var font1:Class;
@@ -50,6 +51,15 @@ package com.emote.dashboard.emotion_distribution
 		        label.setStyle("fontFamily", "MyriadProE");
 		        label.setStyle("fontWeight", "bold");
 		        addChild(label);
+	        }
+	        
+	        if (front == null)
+	        {
+				// create and add the back
+		        front = new Sprite();
+		        front.useHandCursor = true;
+		        front.buttonMode = true;
+		        addChild(front);
 	        }
 	        	        
 		}
@@ -131,6 +141,10 @@ package com.emote.dashboard.emotion_distribution
 			// Draw the column
 			//g.beginFill(columnColor, tr); // bitmapFill
 			g.drawRoundRect(rc.left, rc.top, rc.width, rc.height+8, 18, 18);
+			
+			front.graphics.beginFill(0xffffff,0);
+			front.graphics.drawRoundRect(rc.left, rc.top, rc.width, rc.height+8, 18, 18);
+			front.graphics.endFill();
 			
 			this.back.graphics.clear();
 			this.back.graphics.beginFill(columnColor, .2);

@@ -32,7 +32,8 @@
 			[Bindable] public function set onVerbatimRefresh(f:Function):void { this._verbatimRefreshFunction = f; }
 					   public function get onVerbatimRefresh():Function { return this._verbatimRefreshFunction; }
 					   
-					   private var _current_emotion_selected:String = '';
+			[Bindable] private var _current_emotion_selected:String = '';
+			[Bindable] private var _current_emotion_selected_label:String = '';
 			
 			private function fillEmotionDistributionDP():void {
 				this._emotion_distribution.removeAll();
@@ -48,7 +49,7 @@
 				for each(var slice:XML in this._emotion_data.graph.(@type=='intensity distrubition').slice){
 					var full_label:String = '';
 					var color:uint;
-					if(slice.@name == 'pp'){ full_label = 'passionate positive'; color = 0x83c41c; }
+					if(slice.@name == 'pp'){ full_label = 'passionate positive'; color = 0x83c51a; }
 					if(slice.@name == 'mp'){ full_label = 'mild positive'; color = 0x649812; }
 					if(slice.@name == 'pn'){ full_label = 'passionate negative'; color = 0xd82620; }
 					if(slice.@name == 'mn'){ full_label = 'mild negative'; color = 0x9d0500; }
@@ -63,10 +64,18 @@
 			
 			private function emotionSelected(e:Event):void {
 				if(e.target is PieSeries){
-					this._current_emotion_selected = (this.intensity_chart.selectedChartItem != null) ? this.intensity_chart.selectedChartItem.item.label : null;
+					this._current_emotion_selected = (this.intensity_chart.selectedChartItem != null) ? this.intensity_chart.selectedChartItem.item.label : '';
+					switch(this._current_emotion_selected){
+						case 'pp': this._current_emotion_selected_label = String('passionate positive').toUpperCase(); break;
+						case 'mp': this._current_emotion_selected_label = String('mild positive').toUpperCase(); break;
+						case 'pn': this._current_emotion_selected_label = String('passionate negative').toUpperCase(); break;
+						case 'mn': this._current_emotion_selected_label = String('mild negative').toUpperCase(); break;
+						default: this._current_emotion_selected_label = '';
+					}
 					this.emotion_chart.clearSelection();
 				}else{
-					this._current_emotion_selected = (this.emotion_chart.selectedChartItem != null) ? String(this.emotion_chart.selectedChartItem.item.label).toLowerCase() : null;
+					this._current_emotion_selected = (this.emotion_chart.selectedChartItem != null) ? String(this.emotion_chart.selectedChartItem.item.label).toLowerCase() : '';
+					this._current_emotion_selected_label = this._current_emotion_selected.toUpperCase(); 
 					this.intensity_chart.clearSelection();
 				} 
 				this.doSearch();
@@ -205,12 +214,12 @@
 							<mx:Label text="e.mote" styleName="scoreLabel" fontSize="35" paddingBottom="-8" paddingTop="-10" />
 							<mx:Label text="SCORE" styleName="scoreLabel" fontSize="30" paddingBottom="-10" paddingTop="-9" />
 						</mx:VBox>						
-						<mx:Image source="@Embed(source='assets/verbatim_faces/amazed_intensity_1.png')" width="48" height="48" />
-						<mx:Label text="{this._emotion_data.@emote_score}" styleName="scoreLabel" fontSize="64" color="0xf9d115" paddingBottom="-14" paddingTop="-10" />
+						<mx:Label text="{this._emotion_data.@emote_score}" styleName="scoreLabel" width="90" textAlign="center"
+							fontSize="64" color="0x83c51a" paddingBottom="-14" paddingTop="-10" />
 					</mx:HBox>
 					<mx:HBox width="30%" height="100%" styleName="internalBlackBox" horizontalAlign="center" verticalAlign="middle" horizontalGap="5">
-						<mx:Image id="pdf_button" source="@Embed(source='assets/pdf-icon.png')" alpha=".5" rollOver="{this.pdf_button.alpha=1;}" rollOut="{this.pdf_button.alpha=.5;}" />
-						<mx:Image id="doc_button" source="@Embed(source='assets/doc-icon.png')" alpha=".5" rollOver="{this.doc_button.alpha=1;}" rollOut="{this.doc_button.alpha=.5;}" />
+						<mx:Image id="pdf_button" source="@Embed(source='assets/pdf-icon.png')" alpha=".5" /><!-- rollOver="{this.pdf_button.alpha=1;}" rollOut="{this.pdf_button.alpha=.5;}" -->
+						<mx:Image id="doc_button" source="@Embed(source='assets/doc-icon.png')" alpha=".5" /><!-- rollOver="{this.doc_button.alpha=1;}" rollOut="{this.doc_button.alpha=.5;}" -->
 					</mx:HBox>
 				</mx:HBox>
 				<mx:HBox styleName="internalBlackBox" width="100%" height="100%">
@@ -221,14 +230,14 @@
 								paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
 							<mx:series>
            						<mx:PieSeries field="data" fillFunction="pieFillFunct" nameField="full" labelPosition="none" explodeRadius=".001"
-           							selectable="true" click="this.emotionSelected(event)" />
+           							selectable="true" click="this.emotionSelected(event)" useHandCursor="true" buttonMode="true" />
         					</mx:series>
 							</mx:PieChart>
 							<mx:Legend direction="vertical" horizontalAlign="left" verticalAlign="middle" height="100" width="140"  fontFamily="EMyriadProBold" color="0xffffff"
 								fontWeight="bold" fontAntiAliasType="advanced" fontSize="12" styleName="whiteTitle" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
 					
 									<mx:LegendItem label="{String('passionate positive').toUpperCase()}" fontWeight="bold">
-           								<mx:fill><mx:SolidColor color="0x83c41c"/></mx:fill>
+           								<mx:fill><mx:SolidColor color="0x83c51a"/></mx:fill>
         							</mx:LegendItem>
         							<mx:LegendItem label="{String('mild positive').toUpperCase()}" fontWeight="bold">
            								<mx:fill><mx:SolidColor color="0x649812"/></mx:fill>
@@ -252,19 +261,20 @@
 			<mx:VBox width="100%" height="100%" paddingBottom="0" styleName="internalContentBox">
 				<mx:HBox width="100%">
 					<mx:HBox width="80%" verticalAlign="middle" height="100%" >
-						<mx:Label text="VERBATIMS: {(this._verbatims_data.@search == '') ? 'ALL EMOTIONS' : this._verbatims_data.@search}" styleName="boxLabel" color="0x000000" />
+						<mx:Label text="COMMENTS: {(this._current_emotion_selected_label=='')?'ALL EMOTIONS':(this._current_emotion_selected_label)}" styleName="boxLabel" color="0x000000" />
 					</mx:HBox>
 					<mx:HBox horizontalAlign="right" verticalAlign="middle" paddingBottom="0" height="27" horizontalGap="-22" paddingRight="20" paddingTop="4">
-						<mx:TextInput id="search_term" width="320" focusAlpha="0" borderStyle="solid" borderThickness="3" cornerRadius="13" paddingLeft="20" paddingRight="20" />
+						<mx:TextInput id="search_term" text="{this._verbatims_data.@search}" width="320" focusAlpha="0" borderStyle="solid" borderThickness="3" cornerRadius="13" paddingLeft="20" paddingRight="20" />
 						<mx:Image source="@Embed(source='assets/crazy-button.png')" buttonMode="true" click="this.doSearch();" />
 					</mx:HBox>
 				</mx:HBox>
-				<mx:List dataProvider="{this._verbatims_data.verbatim}" width="100%" height="100%" alternatingItemColors="[0xEEEEEE, 0xDFDFDF]">
+				<mx:List dataProvider="{this._verbatims_data.verbatim}" width="100%" height="100%" alternatingItemColors="[0xEEEEEE, 0xDFDFDF]" variableRowHeight="true">
 					<mx:itemRenderer>
 						<mx:Component>
-							<mx:HBox width="100%">
+							<mx:HBox width="100%" height="100%">
 								<mx:Script>
 								<![CDATA[
+									import mx.controls.List;
 									import mx.controls.Alert;
 									[Embed(source='assets/verbatim_faces/amazed_intensity_1.png')] private var amazed_intensity_1:Class;
 									[Embed(source='assets/verbatim_faces/amazed_intensity_2.png')] private var amazed_intensity_2:Class;
@@ -331,11 +341,15 @@
 									[Bindable] public override function set data(value:Object):void {
 													this._data = value;
 													try { this.img_inst.source = this[this._data.@face.toString()]; }catch (e:*){}
+													t.htmlText=this._data;
+													this.invalidateSize();
+													t.width = (this.owner as List).width - this.img_inst.width - 60;
+													(this.owner as List).invalidateSize();
 												}
 								]]>
 								</mx:Script>
 								<mx:Image id="img_inst" />
-								<mx:Label htmlText="{this._data}" />
+								<mx:Text id="t" selectable="false" />
 							</mx:HBox>
 						</mx:Component>
 					</mx:itemRenderer>

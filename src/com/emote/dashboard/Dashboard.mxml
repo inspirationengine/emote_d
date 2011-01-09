@@ -38,7 +38,10 @@
 			private function fillEmotionDistributionDP():void {
 				this._emotion_distribution.removeAll();
 				for each(var bar:XML in this._emotion_data.graph.(@type=='emotion distribution').bar){
-					this._emotion_distribution.addItem({label: String(bar.@name).toUpperCase(), data: bar.@value, color: ((bar.@color == 'red') ? 0x970600 : 0x567211) });
+					var item:Object = {label: String(bar.@name).toUpperCase(), data: bar.@value, color: ((bar.@color == 'red') ? 0x970600 : 0x567211)};
+					item.colorized_title = item.label+'||'+item.color;
+					this._emotion_distribution.addItem(item);
+					
 				}
 				
 				this.emo_dist_rep.dataProvider = null;
@@ -172,7 +175,7 @@
 							fontFamily="EMyriadProBold" color="0xffffff" fontWeight="bold" fontAntiAliasType="advanced" fontSize="13"
 							resize="{this.emo_dist_rep.dataProvider = null; this.emo_dist_rep.dataProvider = this._emotion_distribution; }">
         					<mx:horizontalAxis>
-           						<mx:CategoryAxis id="ha" categoryField="label" />
+           						<mx:CategoryAxis id="ha" categoryField="colorized_title" />
         					</mx:horizontalAxis>
         			
         					<mx:verticalAxis>
@@ -180,7 +183,7 @@
         					</mx:verticalAxis>
         			
         					<mx:series>
-           						<mx:ColumnSeries xField="label" yField="data" selectable="true" 
+           						<mx:ColumnSeries xField="colorized_title" yField="data" selectable="true" 
            							itemRenderer="com.emote.dashboard.emotion_distribution.ChartItemRenderer" click="this.emotionSelected(event)" />
         					</mx:series>
         			

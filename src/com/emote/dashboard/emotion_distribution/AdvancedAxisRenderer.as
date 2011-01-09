@@ -2,10 +2,8 @@ package com.emote.dashboard.emotion_distribution
 {
 import flash.display.GradientType;
 import flash.display.InterpolationMethod;
-import flash.display.Shape;
 import flash.display.SpreadMethod;
 import flash.geom.Matrix;
-import flash.geom.Rectangle;
 
 import mx.charts.AxisLabel;
 import mx.containers.Box;
@@ -24,6 +22,7 @@ public class AdvancedAxisRenderer extends Box implements IDataRenderer
 
 	private var _axisLabel: AxisLabel;
 	private var _label: Label;
+	private var columnColor: Number = 0x00FF00;
 	
 	override protected function createChildren():void {
 		super.createChildren();
@@ -36,16 +35,14 @@ public class AdvancedAxisRenderer extends Box implements IDataRenderer
 	}
 
 	private function redrawBackground(bk_width:Number, bk_height:Number): void {
-		
-		var columnColor: Number = 0x00FF00;
 
 		var type:String = GradientType.LINEAR;
 		var colors:Array = [0x000000, columnColor];
-		var alphas:Array = [1, 0];
-		var ratios:Array = [0, 255];
+		var alphas:Array = [0, .3];
+		var ratios:Array = [0, 250];
 		var spreadMethod:String = SpreadMethod.PAD;
 		var interp:String = InterpolationMethod.LINEAR_RGB;
-		var focalPtRatio:Number = 0;
+		var focalPtRatio:Number = 1;
 		
 		var matrix:Matrix = new Matrix();
 		var boxWidth:Number = bk_width;
@@ -80,7 +77,9 @@ public class AdvancedAxisRenderer extends Box implements IDataRenderer
 		_axisLabel = AxisLabel(value);
 
 		if(_axisLabel != null){
-			_label.text = _axisLabel.text;
+			var bz:Array = _axisLabel.text.split('||');
+			columnColor = bz[1];
+			_label.text = bz[0];
   		}
   		
 	}

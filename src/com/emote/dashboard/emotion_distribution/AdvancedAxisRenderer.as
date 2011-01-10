@@ -88,7 +88,10 @@ public class AdvancedAxisRenderer extends Box implements IDataRenderer
 												  unscaledHeight:Number):void
 	{
 		super.updateDisplayList(unscaledWidth, unscaledHeight);
-		if(this.data!=null) redrawBackground(unscaledWidth,unscaledHeight);
+		if(this.data!=null){
+			redrawBackground(unscaledWidth,unscaledHeight);
+			_label.move(unscaledWidth-_label.width-5, unscaledHeight/2-_label.height/2);
+		}
 	}
 }
 }

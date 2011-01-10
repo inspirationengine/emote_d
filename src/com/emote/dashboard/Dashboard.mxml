@@ -192,7 +192,7 @@
             				</mx:verticalAxisRenderers>
             		
             				<mx:horizontalAxisRenderers>
-								<mx:AxisRenderer axis="{ha}" showLine="false" showLabels="true" labelRotation="90" labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}">
+								<mx:AxisRenderer axis="{ha}" showLine="false" showLabels="true" labelRotation="90" labelGap="0" labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}">
 								</mx:AxisRenderer>
 								<!-- labelRenderer="{new ClassFactory(AdvancedAxisRenderer)}"  -->
             				</mx:horizontalAxisRenderers>

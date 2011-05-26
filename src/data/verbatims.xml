@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <verbatims description="ALL EMOTIONS" set="1">
-	<verbatim face="outraged_intensity_3"><![CDATA[I wonder why do they treat the little kids like that. They need more schools instead of jails!!!]]></verbatim>
-	<verbatim face="happy_intensity_1"><![CDATA[The focus should be on the schools and education system.]]></verbatim>
-	<verbatim face="irritated_intensity_2"><![CDATA[Education is everything, my first choice would be education.]]></verbatim>
-	<verbatim face="amazed_intensity_1"><![CDATA[The schools need more funding.]]></verbatim>
-	<verbatim face="content_intensity_3"><![CDATA[Schools and education are first, then they should work on a strong fire department and sheriff ofice because there isn't one.]]></verbatim>
+	<verbatim face="outraged_intensity_3" ts_color='0x445533' timestamp='Today with really long title'><![CDATA[I wonder why do they treat the little kids like that. They need more schools instead of jails!!!]]></verbatim>
+	<verbatim face="happy_intensity_1" ts_color='0x445533' timestamp='Today'><![CDATA[The focus should be on the schools and education system.]]></verbatim>
+	<verbatim face="irritated_intensity_2" ts_color='0x440033' timestamp='Today'><![CDATA[Education is everything, my first choice would be education.]]></verbatim>
+	<verbatim face="amazed_intensity_1" ts_color='0xff0000' timestamp='Today'><![CDATA[The schools need more funding.]]></verbatim>
+	<verbatim face="content_intensity_3" ts_color='0x445533' timestamp='Today'><![CDATA[Schools and education are first, then they should work on a strong fire department and sheriff ofice because there isn't one.]]></verbatim>
 </verbatims>

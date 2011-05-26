@@ -3,20 +3,29 @@
 	xmlns:reflector="com.rictus.reflector.*"
 	xmlns:dashboard="com.emote.dashboard.*"
 	paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"
-	backgroundColor="0x000000" width="1140" height="740"
-	creationComplete="init();">
+	backgroundColor="0xffffff" backgroundAlpha="0" width="1140" height="100%"
+	creationComplete="init();" modalTransparency="0" modalTransparencyBlur="2">
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
+			
+			[Bindable] private var action_token:String = '';
+			[Bindable] private var survey_id:String = '';
 			
 			private function init():void {
 				var survey:String = 'holiday';
-				try { survey = Application.application.survey; }catch(e:*){}
+				if(Application.application.parameters.survey != undefined) survey = Application.application.parameters.survey;
 				var session:String = '';
-				try { session = Application.application.session; }catch(e:*){}
+				if(Application.application.parameters.session != undefined) session = Application.application.parameters.session;
+				if(Application.application.parameters.action_token != undefined) this.action_token = Application.application.parameters.action_token;
+				if(Application.application.parameters.survey_id != undefined) this.survey_id = Application.application.parameters.survey_id;
+				
 				this.graphs_ds.url = 
-				"http://www.emotethis.com/results/scorecard.php?survey="+survey+'&session='+session;
+				"http://www.emotethis.com/results/scorecard.php?survey="+survey+'&session='+session+'&action_token='+this.action_token;
 				this.verbatims_ds.url = 
-				"http://www.emotethis.com/results/verbatims.php?survey="+survey+'&session='+session;
+				"http://www.emotethis.com/results/verbatims.php?survey="+survey+'&session='+session+'&action_token='+this.action_token;
+				this.verbatims_rm_ds.url = 
+				"/account/surveys/"+survey_id+"/survey_results/delete_response";
 				this.graphs_ds.send();
 				this.verbatims_ds.send();
 			}
@@ -29,11 +38,23 @@
 				}
 			}
 			
+			private function deleteVerbatim(id:String = null):void {
+				this.verbatims_rm_ds.send({ id:id });
+			}
+			
+			private function deleteVerbatimResult():void {
+				if(verbatims_rm_ds.lastResult.@success == 'true'){
+					this.ds.doSearch();
+					this.graphs_ds.send();	
+				}
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:HTTPService id="graphs_ds" useProxy="false" resultFormat="e4x" />
 	<!-- http://staging1.emotethis.com/results/scorecard.php?survey=holiday -->
 	<mx:HTTPService id="verbatims_ds" useProxy="false" resultFormat="e4x"  />
 	<!-- http://staging1.emotethis.com/results/verbatims.php?survey=holiday -->
-	<dashboard:Dashboard width="100%" height="100%" emotion_data="{this.graphs_ds.lastResult}" verbatims_data="{this.verbatims_ds.lastResult}" onVerbatimRefresh="{this.refreshVerbatims}" />
+	<mx:HTTPService id="verbatims_rm_ds" useProxy="false" resultFormat="e4x" result="{this.deleteVerbatimResult();}"  />
+	<dashboard:Dashboard id="ds" showDeleteDialog="{this.survey_id != ''}" width="100%" height="100%" emotion_data="{this.graphs_ds.lastResult}" verbatims_data="{this.verbatims_ds.lastResult}" onVerbatimDelete="{this.deleteVerbatim}" onVerbatimRefresh="{this.refreshVerbatims}" />
 </mx:Application>
